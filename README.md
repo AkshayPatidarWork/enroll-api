@@ -65,7 +65,7 @@ http://0.0.0.0:3000
 ```bash
 Default Superadmin Credentials:
 email: 'superadmin@yopmail.com',
-Password: Admin@123@123
+Password: Admin@123
 
 ```
 

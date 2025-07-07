@@ -72,7 +72,7 @@ Password: Admin@123@123
 ## 📸 Sample
 
 <p align="center">
-  <img src="https://drive.google.com/file/d/15eeYODHPADerRh-RD6mgotCKXu69l4HI" width="600" />
+  <img src="https://drive.google.com/uc?export=view&id=1RDYUUdmsSZDvuZQStIYFjfRFGQfW691U" width="600" />
 </p>
 
 # 👨‍💻 Author

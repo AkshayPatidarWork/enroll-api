@@ -1,8 +1,8 @@
 {
-  "name": "horoscope",
+  "name": "Student Course Enrollment API",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Backend service for managing colleges, students, courses, and course enrollment with timetable conflict resolution.",
+  "author": "Akshay Patidar",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

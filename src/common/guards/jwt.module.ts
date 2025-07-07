@@ -37,7 +37,7 @@ import { existsSync } from 'fs';
           signOptions: {
             algorithm: config.get<'RS256'>('jwtAlgorithm') || 'RS256',
             expiresIn: config.get<string>('jwtExpiry') || '1d',
-            issuer: config.get<string>('jwtIssuer') || 'horoscope-api',
+            issuer: config.get<string>('jwtIssuer') || 'enroll-api',
           },
         };
       },

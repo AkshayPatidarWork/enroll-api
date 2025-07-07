@@ -69,6 +69,11 @@ Password: Admin@123
 
 ```
 
+
+```DB diagram```
+[DB Diagram](https://dbdiagram.io/d/686be379f413ba3508a9b860)
+
+
 ## 📸 Sample
 <img src="https://drive.google.com/uc?export=view&id=15eeYODHPADerRh-RD6mgotCKXu69l4HI" width="600"/>
 

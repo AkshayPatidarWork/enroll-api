@@ -1,72 +1,90 @@
-import {
-  Injectable,
-  ConflictException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-
-import { SignupDto } from './dto/signup.dto';
+import { Student, Admin } from '@enroll/nest/models';
 import { LoginDto } from './dto/login.dto';
-import { UserService } from '../user/user.service';
-import { checkHash, toHash } from '../common/utils/crypto.utils';
+import { checkHash } from '../common/utils/crypto.utils';
+import { UserType } from '../common/types/user.enum';
+import { Algorithm } from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userService: UserService,
+    @InjectModel(Admin) private adminModel: typeof Admin,
+    @InjectModel(Student) private studentModel: typeof Student,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
 
-  async signup(signupDto: SignupDto) {
-    const { name, email, password, birthdate } = signupDto;
-
-    const existingUser = await this.userService.findByEmail(email);
-    if (existingUser) {
-      throw new ConflictException('Email is already registered.');
-    }
-
-    const hashedPassword = await toHash(password);
-
-    const newUser = await this.userService.create({
-      name,
-      email,
-      password: hashedPassword,
-      birthdate: new Date(birthdate),
-    });
-
-    return {
-      message: 'Signup successful',
-      userId: newUser.id,
-    };
-  }
-
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
 
-    const user = await this.userService.findByEmailWithPassword(email);
-    if (!user) {
-      throw new UnauthorizedException('Invalid email');
+    const admin = await this.adminModel.findOne({ where: { email } });
+
+    if (admin) {
+      const isValid = await checkHash(password, admin.password);
+      if (!isValid) {
+        throw new UnauthorizedException('Invalid password');
+      }
+
+      return this.generateToken({
+        id: admin.id,
+        email: admin.email,
+        role: admin.role,
+        type: 'admin',
+        collegeId: admin.collegeId,
+      });
     }
 
-    const isPasswordValid = await checkHash(password, user.password);
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid password');
+    const student = await this.studentModel.findOne({ where: { email } });
+
+    if (student) {
+      const isValid = await checkHash(password, student.password);
+      if (!isValid) {
+        throw new UnauthorizedException('Invalid password');
+      }
+
+      return this.generateToken({
+        id: student.id,
+        email: student.email,
+        role: 'STUDENT',
+        type: 'student',
+        semester: student.semester,
+        collegeId: student.collegeId,
+      });
     }
 
+    throw new UnauthorizedException('Invalid email or user not found');
+  }
+
+  private generateToken(user: {
+    id: string;
+    email: string;
+    role: UserType | 'STUDENT';
+    type: 'admin' | 'student';
+    collegeId: string;
+    semester?: number;
+  }) {
     const payload = {
-      id: user.id,
+      sub: user.id,
       email: user.email,
-      name: user.name,
-      zodiacSign: user.zodiacSign,
+      role: user.role,
+      type: user.type,
+      collegeId: user.collegeId,
     };
 
-    const expiresIn = this.configService.get<string>('jwtExpiry') || '3h';
-    const issuer =
-      this.configService.get<string>('jwtIssuer') || 'horoscope-api';
+    if (user.type === 'student' && user.semester !== undefined) {
+      payload['semester'] = user.semester;
+    }
 
-    const accessToken = this.jwtService.sign(payload, {
+    const expiresIn = this.configService.get<string>('jwtExpiry') || '3h';
+    const issuer = this.configService.get<string>('jwtIssuer') || 'enroll-api';
+    const algorithm =
+      this.configService.get<Algorithm>('jwtAlgorithm') || 'RS256';
+
+    const token = this.jwtService.sign(payload, {
+      algorithm,
       expiresIn,
       issuer,
     });
@@ -74,12 +92,12 @@ export class AuthService {
     return {
       success: true,
       message: 'Login successful',
-      access_token: accessToken,
+      access_token: token,
       user: {
         id: user.id,
         email: user.email,
-        name: user.name,
-        zodiacSign: user.zodiacSign,
+        role: user.role,
+        type: user.type,
       },
     };
   }

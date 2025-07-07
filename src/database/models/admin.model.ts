@@ -10,25 +10,26 @@ import {
 } from 'sequelize-typescript';
 import { BaseModel } from './base.model';
 import { College } from './college.model';
+import { UserType } from '../../common/types/user.enum';
 
 @Table({ tableName: 'admins' })
 export class Admin extends BaseModel {
   @Unique
   @Column(DataType.STRING)
-  username: string;
+  name: string;
 
   @Unique
   @Column(DataType.STRING)
   email: string;
 
   @Column(DataType.STRING)
-  passwordHash: string;
+  password: string;
 
   @Column({
-    type: DataType.ENUM('superadmin', 'college-admin'),
+    type: DataType.ENUM({ values: Object.values(UserType) }),
     allowNull: false,
   })
-  role: 'superadmin' | 'college-admin';
+  role: UserType;
 
   @ForeignKey(() => College)
   @AllowNull

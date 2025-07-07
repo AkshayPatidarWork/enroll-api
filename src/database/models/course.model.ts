@@ -4,10 +4,12 @@ import {
   Table,
   ForeignKey,
   BelongsTo,
+  HasOne,
 } from 'sequelize-typescript';
 import { BaseModel } from './base.model';
 import { College } from './college.model';
 import { Admin } from './admin.model';
+import { Timetable } from './timetable.model';
 
 @Table({ tableName: 'courses' })
 export class Course extends BaseModel {
@@ -23,8 +25,8 @@ export class Course extends BaseModel {
   @Column(DataType.INTEGER)
   credits: number;
 
-  @Column(DataType.STRING)
-  semester: string;
+  @Column(DataType.INTEGER)
+  semester: number;
 
   @ForeignKey(() => College)
   @Column(DataType.UUID)
@@ -39,4 +41,7 @@ export class Course extends BaseModel {
 
   @BelongsTo(() => Admin, 'createdByAdminId')
   createdByAdmin: Admin;
+
+  @HasOne(() => Timetable)
+  timetable: Timetable;
 }

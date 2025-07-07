@@ -9,6 +9,7 @@ import {
 import { BaseModel } from './base.model';
 import { Course } from './course.model';
 import { Admin } from './admin.model';
+import { DayOfWeek } from '../../common/types/days-of-week.enum';
 
 @Table({ tableName: 'timetables' })
 export class Timetable extends BaseModel {
@@ -20,17 +21,9 @@ export class Timetable extends BaseModel {
   course: Course;
 
   @Column({
-    type: DataType.ENUM(
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday',
-    ),
+    type: DataType.ENUM({ values: Object.values(DayOfWeek) }),
   })
-  day: string;
+  day: DayOfWeek;
 
   @Column(DataType.TIME)
   startTime: string;
@@ -41,12 +34,6 @@ export class Timetable extends BaseModel {
   @AllowNull
   @Column(DataType.STRING)
   location: string;
-
-  @Column({
-    type: DataType.ENUM('offline', 'online', 'hybrid'),
-    defaultValue: 'offline',
-  })
-  mode: string;
 
   @ForeignKey(() => Admin)
   @AllowNull

@@ -10,6 +10,7 @@ import {
 import { Student } from './student.model';
 import { Course } from './course.model';
 import { Admin } from './admin.model';
+import { EnrollmentSource } from '../../common/types/enrollment-source.enum';
 
 @Table({ tableName: 'studentCourses', timestamps: false })
 export class StudentCourse extends Model {
@@ -30,10 +31,10 @@ export class StudentCourse extends Model {
   course: Course;
 
   @Column({
-    type: DataType.ENUM('student', 'admin'),
-    defaultValue: 'student',
+    type: DataType.ENUM({ values: Object.values(EnrollmentSource) }),
+    defaultValue: EnrollmentSource.STUDENT,
   })
-  selectedBy: 'student' | 'admin';
+  selectedBy: EnrollmentSource;
 
   @ForeignKey(() => Admin)
   @Column(DataType.UUID)

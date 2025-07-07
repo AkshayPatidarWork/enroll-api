@@ -13,9 +13,9 @@ async function bootstrap() {
   });
 
   const options = new DocumentBuilder()
-    .setTitle('Personalized Horoscope API')
+    .setTitle('Student Course Enrollment API')
     .setDescription(
-      'Backend service that provides personalized daily horoscopes based on user zodiac signs.',
+      'Backend service for managing colleges, students, courses, and course enrollment with timetable conflict resolution.',
     )
     .setVersion('1.0')
     .addBearerAuth(

@@ -20,7 +20,8 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@horoscope/nest/models": ["src/database/models/index"]
+      "@enroll/nest/models": ["src/database/models/index"],
+      "@enroll/common": ["src/common/guards/index"]
     }
   }
 }

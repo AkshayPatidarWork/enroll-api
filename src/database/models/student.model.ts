@@ -11,7 +11,10 @@ import { College } from './college.model';
 import { Admin } from './admin.model';
 import { StudentStatus } from '../../common/types/student-status.enum';
 
-@Table({ tableName: 'students' })
+@Table({
+  tableName: 'students',
+  indexes: [{ name: 'idx_student_collegeId', fields: ['collegeId'] }],
+})
 export class Student extends BaseModel {
   @Column(DataType.STRING)
   name: string;

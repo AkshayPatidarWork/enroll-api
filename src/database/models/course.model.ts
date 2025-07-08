@@ -11,7 +11,16 @@ import { College } from './college.model';
 import { Admin } from './admin.model';
 import { Timetable } from './timetable.model';
 
-@Table({ tableName: 'courses' })
+@Table({
+  tableName: 'courses',
+  indexes: [
+    {
+      name: 'college_code_unique',
+      unique: true,
+      fields: ['collegeId', 'code'],
+    },
+  ],
+})
 export class Course extends BaseModel {
   @Column(DataType.STRING)
   code: string;

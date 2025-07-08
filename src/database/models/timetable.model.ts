@@ -11,7 +11,15 @@ import { Course } from './course.model';
 import { Admin } from './admin.model';
 import { DayOfWeek } from '../../common/types/days-of-week.enum';
 
-@Table({ tableName: 'timetables' })
+@Table({
+  tableName: 'timetables',
+  indexes: [
+    {
+      name: 'idx_timetable_course_day_time',
+      fields: ['courseId', 'day', 'startTime', 'endTime'],
+    },
+  ],
+})
 export class Timetable extends BaseModel {
   @ForeignKey(() => Course)
   @Column(DataType.UUID)

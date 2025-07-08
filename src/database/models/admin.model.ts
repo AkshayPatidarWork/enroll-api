@@ -14,7 +14,6 @@ import { UserType } from '../../common/types/user.enum';
 
 @Table({ tableName: 'admins' })
 export class Admin extends BaseModel {
-  @Unique
   @Column(DataType.STRING)
   name: string;
 
